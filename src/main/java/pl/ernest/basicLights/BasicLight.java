@@ -4,7 +4,8 @@ import pl.ernest.model.ILight;
 import pl.ernest.model.TrafficCycle;
 import pl.ernest.model.Vehicle;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 //basic light - 1 queue, for every turn
@@ -25,18 +26,19 @@ public class BasicLight implements ILight {
     }
 
     @Override
-    public Optional<Vehicle> GreenCycle() {
+    public List<Vehicle> greenCycle() {
+        ArrayList<Vehicle> result = new ArrayList<>();
         if (!carsQueue.isEmpty() && trafficCycle == TrafficCycle.Green){
-            return Optional.of(carsQueue.remove());
+            result.add(carsQueue.remove());
         }
-        return Optional.empty();
+        return result;
     }
 
     @Override
     public int getSumPriority(){
         int sum = 0;
         for (Vehicle vehicle : carsQueue) {
-            sum += vehicle.getPriority();
+            sum += vehicle.priority();
         }
         return sum;
     }
@@ -54,4 +56,11 @@ public class BasicLight implements ILight {
         carsQueue.add(vehicle);
     }
 
+    public Queue<Vehicle> getCarsQueue() {
+        return carsQueue;
+    }
+
+    public TrafficCycle getTrafficCycle() {
+        return trafficCycle;
+    }
 }

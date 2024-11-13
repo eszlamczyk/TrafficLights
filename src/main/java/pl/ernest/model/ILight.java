@@ -1,12 +1,12 @@
 package pl.ernest.model;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface ILight {
 
     void nextCycle();
 
-    Optional<Vehicle> GreenCycle();
+    List<Vehicle> greenCycle();
 
     int getSumPriority();
 
