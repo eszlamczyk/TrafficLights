@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-class StepStatusesWrapper {
+public class StepStatusesWrapper {
     @JsonProperty("stepStatuses")
     private final List<StepStatus> stepStatuses;
 
@@ -12,3 +12,4 @@ class StepStatusesWrapper {
         this.stepStatuses = stepStatuses;
     }
 }
+

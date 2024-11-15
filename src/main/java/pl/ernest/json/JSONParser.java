@@ -52,7 +52,6 @@ public class JSONParser {
 
     public static void createOutput(String outputPath, TrafficLights trafficLights){
 
-
         List<StepStatus> stepStatusList = new ArrayList<>();
         for (ArrayList<Vehicle> step : trafficLights.getStepStatuses()) {
             StepStatus status = new StepStatus();
@@ -67,7 +66,6 @@ public class JSONParser {
             File outputFile = new File(outputPath);
 
             mapper.writerWithDefaultPrettyPrinter().writeValue(outputFile, new StepStatusesWrapper(stepStatusList));
-            //System.out.println("JSON saved to file: " + outputFile.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }

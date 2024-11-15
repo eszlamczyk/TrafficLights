@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import pl.ernest.model.Road;
 import pl.ernest.model.IndicatorLight;
 import pl.ernest.model.Vehicle;
+import pl.ernest.model.basicLights.BasicLight;
 
 import java.util.*;
 

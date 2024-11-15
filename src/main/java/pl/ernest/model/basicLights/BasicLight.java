@@ -1,4 +1,4 @@
-package pl.ernest.basicLights;
+package pl.ernest.model.basicLights;
 
 import pl.ernest.model.ILight;
 import pl.ernest.model.IndicatorLight;

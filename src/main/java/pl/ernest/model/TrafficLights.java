@@ -2,11 +2,6 @@ package pl.ernest.model;
 
 import java.util.*;
 
-
-//4 lights no pedestrians no arrows
-//some assumptions:
-// - cars require the same time to move though the intersection
-// - there are no cool down phases where every light is red (everyone can instantly leave the crossing so no need to)
 public class TrafficLights {
 //    private final ILight northLight;
 //    private final ILight eastLight;

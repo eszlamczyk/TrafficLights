@@ -1,6 +1,6 @@
 package pl.ernest;
 
-import pl.ernest.basicLights.BasicLight;
+import pl.ernest.model.basicLights.BasicLight;
 import pl.ernest.model.TrafficLights;
 import pl.ernest.command.ICommand;
 import pl.ernest.json.JSONParser;
