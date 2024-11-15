@@ -3,7 +3,7 @@ package pl.ernest.model;
 public enum Road {
     north, east, south, west;
 
-    public Road getStraight(){
+    public Road getOppositeRoad(){
         return switch (this){
             case north -> south;
             case east -> west;
@@ -12,7 +12,7 @@ public enum Road {
         };
     }
 
-    public Road getLeftTurn(){
+    public Road getRoadOnTheLeft(){
         return switch (this){
             case north -> east;
             case east -> south;
@@ -21,7 +21,7 @@ public enum Road {
         };
     }
 
-    public Road getRightTurn(){
+    public Road getRoadOnTheRight(){
         return switch (this){
             case north -> west;
             case east -> north;

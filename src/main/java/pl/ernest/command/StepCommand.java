@@ -1,18 +1,18 @@
 package pl.ernest.command;
 
-import pl.ernest.basicLights.Lights;
+import pl.ernest.model.TrafficLights;
 
 public class StepCommand implements ICommand{
 
-    private final Lights lights;
+    private final TrafficLights trafficLights;
 
-    public StepCommand(Lights lights) {
-        this.lights = lights;
+    public StepCommand(TrafficLights trafficLights) {
+        this.trafficLights = trafficLights;
     }
 
     @Override
     public void execute() {
-        System.out.println("executing Step");
-        lights.stepSimulation();
+        //System.out.println("executing Step");
+        trafficLights.stepSimulation();
     }
 }

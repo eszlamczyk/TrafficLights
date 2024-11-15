@@ -1,11 +1,11 @@
 package pl.ernest;
 
 import pl.ernest.basicLights.BasicLight;
-import pl.ernest.basicLights.Lights;
+import pl.ernest.model.TrafficLights;
 import pl.ernest.command.ICommand;
 import pl.ernest.json.JSONParser;
 import pl.ernest.model.ILight;
-import pl.ernest.model.TrafficCycle;
+import pl.ernest.model.IndicatorLight;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -14,101 +14,28 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        String jsonString = """
-                {
 
-                  "commands": [
+        if (args.length < 2){
+            System.out.println("please provide input and output json file path");
+            return;
+        }
 
-                    {
+        ILight northLight = new BasicLight(new LinkedList<>(), IndicatorLight.Green);
+        ILight southLight = new BasicLight(new LinkedList<>(), IndicatorLight.Green);
+        ILight eastLight = new BasicLight(new LinkedList<>(), IndicatorLight.Red);
+        ILight westLight = new BasicLight(new LinkedList<>(), IndicatorLight.Red);
 
-                      "type": "addVehicle",
+        int priorityConstant = 10;
 
-                      "vehicleId": "vehicle1",
+        TrafficLights trafficLights = new TrafficLights(northLight,eastLight,southLight,westLight, priorityConstant);
 
-                      "startRoad": "south",
-
-                      "endRoad": "north"
-
-                    },
-
-                    {
-
-                      "type": "addVehicle",
-
-                      "vehicleId": "vehicle2",
-
-                      "startRoad": "north",
-
-                      "endRoad": "south"
-
-                    },
-
-                    {
-
-                      "type": "step"
-
-                    },
-
-                    {
-
-                      "type": "step"
-
-                    },
-
-                    {
-
-                      "type": "addVehicle",
-
-                      "vehicleId": "vehicle3",
-
-                      "startRoad": "west",
-
-                      "endRoad": "south"
-
-                    },
-
-                    {
-
-                      "type": "addVehicle",
-
-                      "vehicleId": "vehicle4",
-
-                      "startRoad": "west",
-
-                      "endRoad": "south"
-
-                    },
-
-                    {
-
-                      "type": "step"
-
-                    },
-
-                    {
-
-                      "type": "step"
-
-                    }
-
-                  ]
-
-                }""";
-
-        ILight northLight = new BasicLight(new LinkedList<>(), TrafficCycle.Green);
-        ILight southLight = new BasicLight(new LinkedList<>(), TrafficCycle.Green);
-        ILight eastLight = new BasicLight(new LinkedList<>(), TrafficCycle.Red);
-        ILight westLight = new BasicLight(new LinkedList<>(), TrafficCycle.Red);
-
-        Lights lights = new Lights(northLight,eastLight,southLight,westLight);
-
-        List<ICommand> commandList = JSONParser.parseInput(jsonString, lights);
+        List<ICommand> commandList = JSONParser.parseInput(args[0], trafficLights);
 
         for (ICommand command : commandList){
             command.execute();
         }
 
-        System.out.println(lights.getStepStatuses());
-
+        JSONParser.createOutput(args[1], trafficLights);
+        //System.out.println(trafficLights.getStepStatuses());
     }
 }

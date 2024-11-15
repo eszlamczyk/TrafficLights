@@ -1,12 +1,12 @@
 package pl.ernest.model;
 
-public enum TrafficCycle {
+public enum IndicatorLight {
     Red,
     YellowRed,
     Green,
     Yellow;
 
-    public TrafficCycle next(){
+    public IndicatorLight next(){
         return switch (this){
             case Red -> YellowRed;
             case YellowRed -> Green;

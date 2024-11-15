@@ -3,7 +3,7 @@ package pl.ernest.basicLights;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pl.ernest.model.Road;
-import pl.ernest.model.TrafficCycle;
+import pl.ernest.model.IndicatorLight;
 import pl.ernest.model.Vehicle;
 
 import java.util.*;
@@ -28,40 +28,70 @@ public class BasicLightTest {
         vehicles.add(new Vehicle("car4", Road.east,2));
         vehicles.add(new Vehicle("car5", Road.east,4));
 
-        basicLightGreen = new BasicLight(vehicles, TrafficCycle.Green);
-        basicLightYellow = new BasicLight(vehicles, TrafficCycle.Yellow);
-        basicLightRed = new BasicLight(vehicles, TrafficCycle.Red);
-        basicLightYellowRed = new BasicLight(vehicles, TrafficCycle.YellowRed);
+        basicLightGreen = new BasicLight(new LinkedList<>(vehicles), IndicatorLight.Green);
+        basicLightYellow = new BasicLight(new LinkedList<>(vehicles), IndicatorLight.Yellow,2);
+        basicLightRed = new BasicLight(new LinkedList<>(vehicles), IndicatorLight.Red,3);
+        basicLightYellowRed = new BasicLight(new LinkedList<>(vehicles), IndicatorLight.YellowRed,4);
     }
 
 
     @Test
     void getSumPriorityTest(){
-        BasicLight basicEmptyLight = new BasicLight(new LinkedList<>(), TrafficCycle.Green);
+        BasicLight basicEmptyLight = new BasicLight(new LinkedList<>(), IndicatorLight.Green);
 
         assertEquals(9,basicLightGreen.getSumPriority());
+        assertEquals(18,basicLightYellow.getSumPriority());
+        assertEquals(27,basicLightRed.getSumPriority());
+        assertEquals(36,basicLightYellowRed.getSumPriority());
         assertEquals(0,basicEmptyLight.getSumPriority());
     }
 
     @Test
     void greenCycleTest(){
-        List<Vehicle> firstResultArray = new ArrayList<>();
-        firstResultArray.add(new Vehicle("car1", Road.east));
+        List<Optional<Vehicle>> firstResultArray = new ArrayList<>();
+        firstResultArray.add(Optional.of(new Vehicle("car1", Road.east)));
 
-        List<Vehicle> greenCars = basicLightGreen.greenCycle();
-        List<Vehicle> yellowCars = basicLightYellow.greenCycle();
-        List<Vehicle> redCars = basicLightRed.greenCycle();
-        List<Vehicle> yellowRedCars = basicLightYellowRed.greenCycle();
+        List<Optional<Vehicle>> greenCars = basicLightGreen.greenCars();
+        List<Optional<Vehicle>> yellowCars = basicLightYellow.greenCars();
+        List<Optional<Vehicle>> redCars = basicLightRed.greenCars();
+        List<Optional<Vehicle>> yellowRedCars = basicLightYellowRed.greenCars();
 
         assertEquals(firstResultArray, greenCars);
-        assertEquals(new Vehicle("car2", Road.east), basicLightGreen.greenCycle().getFirst());
-        assertEquals(new Vehicle("car3", Road.east), basicLightGreen.greenCycle().getFirst());
-        assertEquals(new Vehicle("car4", Road.east, 2), basicLightGreen.greenCycle().getFirst());
-        assertEquals(new Vehicle("car5", Road.east,4), basicLightGreen.greenCycle().getFirst());
-        assertTrue(basicLightGreen.greenCycle().isEmpty());
-        assertTrue(yellowCars.isEmpty());
-        assertTrue(redCars.isEmpty());
-        assertTrue(yellowRedCars.isEmpty());
+        assertEquals(Optional.of(new Vehicle("car2", Road.east)), basicLightGreen.greenCars().getFirst());
+        assertEquals(Optional.of(new Vehicle("car3", Road.east)), basicLightGreen.greenCars().getFirst());
+        assertEquals(Optional.of(new Vehicle("car4", Road.east, 2)), basicLightGreen.greenCars().getFirst());
+        assertEquals(Optional.of(new Vehicle("car5", Road.east,4)), basicLightGreen.greenCars().getFirst());
+        assertTrue(basicLightGreen.greenCars().getFirst().isEmpty());
+        assertTrue(yellowCars.getFirst().isEmpty());
+        assertTrue(redCars.getFirst().isEmpty());
+        assertTrue(yellowRedCars.getFirst().isEmpty());
+
+        assertEquals(5, basicLightYellow.getCarsQueue().size());
+        assertEquals(5, basicLightRed.getCarsQueue().size());
+        assertEquals(5, basicLightYellowRed.getCarsQueue().size());
+    }
+
+    @Test
+    void greenCarFromIndexTest(){
+        Optional<Vehicle> firstResult = Optional.of(new Vehicle("car1", Road.east));
+
+        Optional<Vehicle> greenCar = basicLightGreen.greenCarFromIndex(0);
+        Optional<Vehicle> yellowCar = basicLightYellow.greenCarFromIndex(0);
+        Optional<Vehicle> redCar = basicLightRed.greenCarFromIndex(0);
+        Optional<Vehicle> yellowRedCar = basicLightYellowRed.greenCarFromIndex(0);
+
+        assertEquals(firstResult, greenCar);
+        assertTrue(basicLightGreen.greenCarFromIndex(-1).isEmpty());
+        assertTrue(basicLightGreen.greenCarFromIndex(-312312123).isEmpty());
+        assertTrue(basicLightGreen.greenCarFromIndex(100).isEmpty());
+        assertTrue(basicLightGreen.greenCarFromIndex(1).isEmpty());
+        assertTrue(yellowCar.isEmpty());
+        assertTrue(redCar.isEmpty());
+        assertTrue(yellowRedCar.isEmpty());
+
+
+        assertEquals(4, basicLightGreen.getCarsQueue().size());
+
     }
 
     @Test
@@ -79,10 +109,10 @@ public class BasicLightTest {
         basicLightRed.nextCycle();
         basicLightYellowRed.nextCycle();
 
-        assertEquals(TrafficCycle.Yellow,basicLightGreen.getTrafficCycle());
-        assertEquals(TrafficCycle.Red, basicLightYellow.getTrafficCycle());
-        assertEquals(TrafficCycle.YellowRed, basicLightRed.getTrafficCycle());
-        assertEquals(TrafficCycle.Green, basicLightYellowRed.getTrafficCycle());
+        assertEquals(IndicatorLight.Yellow,basicLightGreen.getTrafficCycle());
+        assertEquals(IndicatorLight.Red, basicLightYellow.getTrafficCycle());
+        assertEquals(IndicatorLight.YellowRed, basicLightRed.getTrafficCycle());
+        assertEquals(IndicatorLight.Green, basicLightYellowRed.getTrafficCycle());
     }
 
     @Test
@@ -93,5 +123,13 @@ public class BasicLightTest {
         basicLightGreen.addVehicle(addedVehicle);
 
         assertEquals(vehicles, basicLightGreen.getCarsQueue());
+    }
+
+    @Test
+    void getAmountOfLanesTest(){
+        assertEquals(1, basicLightGreen.getAmountOfLanes());
+        assertEquals(1, basicLightYellow.getAmountOfLanes());
+        assertEquals(1, basicLightRed.getAmountOfLanes());
+        assertEquals(1, basicLightYellowRed.getAmountOfLanes());
     }
 }

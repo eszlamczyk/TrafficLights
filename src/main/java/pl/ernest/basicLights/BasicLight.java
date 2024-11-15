@@ -1,11 +1,12 @@
 package pl.ernest.basicLights;
 
 import pl.ernest.model.ILight;
-import pl.ernest.model.TrafficCycle;
+import pl.ernest.model.IndicatorLight;
 import pl.ernest.model.Vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 
 //basic light - 1 queue, for every turn
@@ -13,26 +14,43 @@ public class BasicLight implements ILight {
 
     private final Queue<Vehicle> carsQueue;
 
-    private TrafficCycle trafficCycle;
+    private IndicatorLight indicatorLight;
 
-    public BasicLight(Queue<Vehicle> carsQueue, TrafficCycle trafficCycle) {
+    private final int lightPriority;
+
+    public BasicLight(Queue<Vehicle> carsQueue, IndicatorLight indicatorLight, int lightPriority) {
         this.carsQueue = carsQueue;
-        this.trafficCycle = trafficCycle;
+        this.indicatorLight = indicatorLight;
+        this.lightPriority = lightPriority;
+    }
+
+    public BasicLight(Queue<Vehicle> carsQueue, IndicatorLight indicatorLight) {
+        this(carsQueue, indicatorLight,1);
     }
 
     @Override
     public void nextCycle(){
-        this.trafficCycle = trafficCycle.next();
+        this.indicatorLight = indicatorLight.next();
     }
 
     @Override
-    public List<Vehicle> greenCycle() {
-        ArrayList<Vehicle> result = new ArrayList<>();
-        if (!carsQueue.isEmpty() && trafficCycle == TrafficCycle.Green){
-            result.add(carsQueue.remove());
+    public List<Optional<Vehicle>> greenCars() {
+        ArrayList<Optional<Vehicle>> result = new ArrayList<>();
+        if (!carsQueue.isEmpty() && indicatorLight == IndicatorLight.Green){
+            result.add(Optional.of(carsQueue.remove()));
+        }else {
+            result.add(Optional.empty());
         }
         return result;
     }
+
+    public Optional<Vehicle> greenCarFromIndex(int index){
+        if (!carsQueue.isEmpty() && indicatorLight == IndicatorLight.Green && index == 0) {
+            return Optional.of(carsQueue.remove());
+        }
+        return Optional.empty();
+    }
+
 
     @Override
     public int getSumPriority(){
@@ -40,12 +58,12 @@ public class BasicLight implements ILight {
         for (Vehicle vehicle : carsQueue) {
             sum += vehicle.priority();
         }
-        return sum;
+        return sum * lightPriority;
     }
 
     @Override
     public int getGreenPriority(){
-        if(trafficCycle == TrafficCycle.Green){
+        if(indicatorLight == IndicatorLight.Green){
             return getSumPriority();
         }
         return 0;
@@ -56,11 +74,22 @@ public class BasicLight implements ILight {
         carsQueue.add(vehicle);
     }
 
+    @Override
+    public int getAmountOfLanes(){
+        return 1;
+    }
+
+    @Override
+    public boolean isBlocked() {
+        //no pedestrians - no blockage
+        return false;
+    }
+
     public Queue<Vehicle> getCarsQueue() {
         return carsQueue;
     }
 
-    public TrafficCycle getTrafficCycle() {
-        return trafficCycle;
+    public IndicatorLight getTrafficCycle() {
+        return indicatorLight;
     }
 }
