@@ -1,12 +1,8 @@
-package pl.ernest.fancyLights;
+package pl.ernest.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.ernest.model.IndicatorLight;
-import pl.ernest.model.Road;
-import pl.ernest.model.Vehicle;
 import pl.ernest.model.basicLights.BasicLight;
-import pl.ernest.model.fancyLights.Lane;
 import pl.ernest.model.fancyLights.LaneTurn;
 
 import java.util.LinkedList;
@@ -85,7 +81,7 @@ public class LaneTest {
 
     @Test
     void getSumPriorityTest(){
-        BasicLight basicEmptyLight = new BasicLight(new LinkedList<>(), IndicatorLight.Green);
+        BasicLight basicEmptyLight = new BasicLight(new LinkedList<>(), IndicatorLight.Green, Road.north);
 
         assertEquals(0,basicEmptyLight.getSumPriority());
         assertEquals(11, lane.getSumPriority());
