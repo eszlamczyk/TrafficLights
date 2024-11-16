@@ -1,7 +1,6 @@
-package pl.ernest.model.fancyLights;
+package pl.ernest.model;
 
-import pl.ernest.model.IndicatorLight;
-import pl.ernest.model.Vehicle;
+import pl.ernest.model.fancyLights.LaneTurn;
 
 import java.util.Queue;
 
@@ -11,30 +10,47 @@ public class Lane {
     private final Queue<IndicatorLight> nextLights;
     private IndicatorLight light;
     private final Queue<Vehicle> laneQueue;
+    private final boolean isTrafficArrow;
+
+    public Lane(LaneTurn turn, Queue<IndicatorLight> nextLights, Queue<Vehicle> laneQueue, boolean isTrafficArrow) {
+        this.turn = turn;
+        this.nextLights = nextLights;
+        this.light = nextLights.remove();
+        this.laneQueue = laneQueue;
+        this.isTrafficArrow = isTrafficArrow;
+    }
 
     public Lane(LaneTurn turn, Queue<IndicatorLight> nextLights, Queue<Vehicle> laneQueue) {
         this.turn = turn;
         this.nextLights = nextLights;
         this.light = nextLights.remove();
         this.laneQueue = laneQueue;
+        this.isTrafficArrow = false;
     }
 
     public boolean vehiclesInQueue(){
         return !laneQueue.isEmpty();
     }
+
+    public boolean isTrafficArrow(){
+        return isTrafficArrow;
+    }
+
+    public int getAmountVehiclesInQueue(){
+        return laneQueue.size();
+    }
+
     public void addVehicle(Vehicle vehicle){
         laneQueue.add(vehicle);
     }
 
-    public Vehicle getVehicle(){
+    public Vehicle getNextVehicle(){
         return laneQueue.remove();
     }
     public LaneTurn getTurn(){
         return turn;
     }
-    public int getLaneQueueSize(){
-        return laneQueue.size();
-    }
+
 
     public IndicatorLight getLight() {
         return light;

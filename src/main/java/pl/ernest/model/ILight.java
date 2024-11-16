@@ -7,9 +7,9 @@ public interface ILight {
 
     void nextCycle();
 
-    List<Optional<Vehicle>> greenCars();
+    List<Optional<Vehicle>> moveCarsIntoIntersection();
 
-    Optional<Vehicle> greenCarFromIndex(int index);
+    Optional<Vehicle> moveCarIntoIntersectionFromLane(int laneNumber);
 
     int getSumPriority();
 
@@ -19,6 +19,12 @@ public interface ILight {
 
     int getAmountOfLanes();
 
-    boolean isBlocked();
+    void addPedestrian(Pedestrian pedestrian);
+
+    List<Pedestrian> pedestriansCrossing();
+
+    boolean isBlockedByPedestrians();
+
+    List<Lane> getLanesList();
 
 }

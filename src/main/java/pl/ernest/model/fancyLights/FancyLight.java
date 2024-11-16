@@ -1,11 +1,13 @@
 package pl.ernest.model.fancyLights;
 
+import pl.ernest.json.Logger;
 import pl.ernest.model.*;
 
 import java.util.*;
 
 public class FancyLight implements ILight {
 
+    private final Logger logger = Logger.getInstance();
     private final List<Lane> lanes;
     private final List<Pedestrian> pedestrians;
     private IndicatorLight pedestrianLight;
@@ -18,6 +20,11 @@ public class FancyLight implements ILight {
         this.lightPriority = lightPriority;
         this.startDirection = startDirection;
         checkLanePlacement();
+        setPedestrianLight();
+    }
+
+    public FancyLight(List<Lane> lanes, Road startDirection) throws IncorrectLaneArrangementException {
+        this(lanes,new ArrayList<>(),1,startDirection);
     }
 
     private void checkLanePlacement() throws IncorrectLaneArrangementException{
@@ -80,22 +87,30 @@ public class FancyLight implements ILight {
 
     @Override
     public void nextCycle() {
-        pedestrianLight = IndicatorLight.Green;
         for(Lane lane : lanes){
             lane.nextLight();
-            if (lane.getLight() != IndicatorLight.Red){
+        }
+        setPedestrianLight();
+        this.logger.logNewCycle(this);
+    }
+
+    private void setPedestrianLight(){
+        pedestrianLight = IndicatorLight.Green;
+        for(Lane lane : lanes){
+            if (lane.getLight() != IndicatorLight.Red) {
                 pedestrianLight = IndicatorLight.Red;
+                break;
             }
         }
     }
 
     @Override
-    public List<Optional<Vehicle>> greenCars() {
+    public List<Optional<Vehicle>> moveCarsIntoIntersection() {
         ArrayList<Optional<Vehicle>> returnArray = new ArrayList<>();
 
         for (Lane lane : lanes){
             if(lane.getLight() == IndicatorLight.Green && lane.vehiclesInQueue()){
-                returnArray.add(Optional.of(lane.getVehicle()));
+                returnArray.add(Optional.of(lane.getNextVehicle()));
             } else returnArray.add(Optional.empty());
         }
 
@@ -103,10 +118,10 @@ public class FancyLight implements ILight {
     }
 
     @Override
-    public Optional<Vehicle> greenCarFromIndex(int index) {
+    public Optional<Vehicle> moveCarIntoIntersectionFromLane(int laneNumber) {
 
-        if (lanes.get(index).getLight() == IndicatorLight.Green && lanes.get(index).vehiclesInQueue()){
-            return Optional.of(lanes.get(index).getVehicle());
+        if (lanes.get(laneNumber).getLight() == IndicatorLight.Green && lanes.get(laneNumber).vehiclesInQueue()){
+            return Optional.of(lanes.get(laneNumber).getNextVehicle());
         }
         return Optional.empty();
     }
@@ -117,7 +132,7 @@ public class FancyLight implements ILight {
         for (Lane lane : lanes){
             sum += lane.getSumPriority();
         }
-        return sum * this.lightPriority - pedestrians.size();
+        return sum * this.lightPriority + pedestrians.size();
     }
 
     @Override
@@ -128,6 +143,7 @@ public class FancyLight implements ILight {
                 sum += lane.getSumPriority();
             }
         }
+        //peds want the light to be Red
         return Math.max(0, sum * lightPriority - pedestrians.size());
     }
 
@@ -147,11 +163,25 @@ public class FancyLight implements ILight {
             possibleLaneTurns.add(LaneTurn.Left);
             possibleLaneTurns.add(LaneTurn.LeftStraight);
             possibleLaneTurns.add(LaneTurn.LeftStraightRight);
-        } else {
+        }
+        /*
+         * It is possible to make a U-turn from a left-turn lane, but only when it is the lane furthest to the left.
+         * Therefore, the algorithm should check for additional U-turn lanes, and if none exist:
+         *
+         * chosenLane = lanes.getFirst();
+         *
+         * Due to checkLanePlacement(), the chosen lane must be either:
+         * - A dedicated U-turn lane, or
+         * - A left-turn lane
+         *
+         * As a result, making a U-turn from this lane is ALWAYS valid.
+         */
+        else if (lanes.getFirst().getTurn() != LaneTurn.UTurn){
+            Lane chosenLane = lanes.getFirst();
+            chosenLane.addVehicle(vehicle);
+            return;
+        }else {
             possibleLaneTurns.add(LaneTurn.UTurn);
-            possibleLaneTurns.add(LaneTurn.Left);
-            possibleLaneTurns.add(LaneTurn.LeftStraight);
-            possibleLaneTurns.add(LaneTurn.LeftStraightRight);
         }
 
         ArrayList<Lane> correctLanes = new ArrayList<>();
@@ -164,13 +194,24 @@ public class FancyLight implements ILight {
         int shortestQueueAmount = Integer.MAX_VALUE;
         Lane chosenLane = correctLanes.getFirst();
         for (Lane correctLane : correctLanes){
-            if (correctLane.getLaneQueueSize() < shortestQueueAmount){
+            if (correctLane.getAmountVehiclesInQueue() < shortestQueueAmount){
                 chosenLane = correctLane;
-                shortestQueueAmount = correctLane.getLaneQueueSize();
+                shortestQueueAmount = correctLane.getAmountVehiclesInQueue();
             }
         }
         chosenLane.addVehicle(vehicle);
     }
+
+    public void addPedestrian(Pedestrian pedestrian){
+        this.pedestrians.add(pedestrian);
+    }
+
+    public List<Pedestrian> pedestriansCrossing(){
+        List<Pedestrian> pedestrians = this.pedestrians.stream().toList();
+        this.pedestrians.clear();
+        return pedestrians;
+    }
+
 
     @Override
     public int getAmountOfLanes() {
@@ -178,7 +219,23 @@ public class FancyLight implements ILight {
     }
 
     @Override
-    public boolean isBlocked() {
+    public boolean isBlockedByPedestrians() {
         return pedestrianLight == IndicatorLight.Green;
+    }
+
+    @Override
+    public List<Lane> getLanesList() {
+        return lanes;
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder resultString = new StringBuilder(startDirection.toString() + " road; [");
+
+        for (Lane lane : lanes){
+            resultString.append(lane.getLight().toString());
+        }
+        resultString.append("]");
+        return resultString.toString();
     }
 }

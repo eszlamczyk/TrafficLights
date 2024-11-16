@@ -1,52 +1,58 @@
 package pl.ernest.model.basicLights;
 
-import pl.ernest.model.ILight;
-import pl.ernest.model.IndicatorLight;
-import pl.ernest.model.Vehicle;
+import pl.ernest.json.Logger;
+import pl.ernest.model.*;
+import pl.ernest.model.Lane;
+import pl.ernest.model.fancyLights.LaneTurn;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Queue;
+import java.util.*;
 
 //basic light - 1 queue, for every turn
 public class BasicLight implements ILight {
 
-    private final Queue<Vehicle> carsQueue;
+    private final Logger logger = Logger.getInstance();
 
-    private IndicatorLight indicatorLight;
+    private final Lane lane;
 
     private final int lightPriority;
 
-    public BasicLight(Queue<Vehicle> carsQueue, IndicatorLight indicatorLight, int lightPriority) {
-        this.carsQueue = carsQueue;
-        this.indicatorLight = indicatorLight;
+    private final Road startDirection;
+
+    public BasicLight(Queue<Vehicle> carsQueue, IndicatorLight indicatorLight, int lightPriority, Road startDirection) {
+        Queue<IndicatorLight> indicatorLightQueue = new LinkedList<>();
+        for (int i = 0; i < 4; i++) {
+            indicatorLightQueue.add(indicatorLight);
+            indicatorLight = indicatorLight.next();
+        }
+        this.lane = new Lane(LaneTurn.LeftStraightRight,indicatorLightQueue,carsQueue);
         this.lightPriority = lightPriority;
+        this.startDirection = startDirection;
     }
 
-    public BasicLight(Queue<Vehicle> carsQueue, IndicatorLight indicatorLight) {
-        this(carsQueue, indicatorLight,1);
+    public BasicLight(Queue<Vehicle> carsQueue, IndicatorLight indicatorLight, Road startDirection) {
+        this(carsQueue, indicatorLight,1, startDirection);
     }
 
     @Override
     public void nextCycle(){
-        this.indicatorLight = indicatorLight.next();
+        this.lane.nextLight();
+        this.logger.logNewCycle(this);
     }
 
     @Override
-    public List<Optional<Vehicle>> greenCars() {
+    public List<Optional<Vehicle>> moveCarsIntoIntersection() {
         ArrayList<Optional<Vehicle>> result = new ArrayList<>();
-        if (!carsQueue.isEmpty() && indicatorLight == IndicatorLight.Green){
-            result.add(Optional.of(carsQueue.remove()));
+        if (lane.vehiclesInQueue() && lane.getLight() == IndicatorLight.Green){
+            result.add(Optional.of(lane.getNextVehicle()));
         }else {
             result.add(Optional.empty());
         }
         return result;
     }
 
-    public Optional<Vehicle> greenCarFromIndex(int index){
-        if (!carsQueue.isEmpty() && indicatorLight == IndicatorLight.Green && index == 0) {
-            return Optional.of(carsQueue.remove());
+    public Optional<Vehicle> moveCarIntoIntersectionFromLane(int laneNumber){
+        if (laneNumber == 0){
+            return moveCarsIntoIntersection().getFirst();
         }
         return Optional.empty();
     }
@@ -54,16 +60,12 @@ public class BasicLight implements ILight {
 
     @Override
     public int getSumPriority(){
-        int sum = 0;
-        for (Vehicle vehicle : carsQueue) {
-            sum += vehicle.priority();
-        }
-        return sum * lightPriority;
+        return lane.getSumPriority() * lightPriority;
     }
 
     @Override
     public int getGreenPriority(){
-        if(indicatorLight == IndicatorLight.Green){
+        if(lane.getLight() == IndicatorLight.Green){
             return getSumPriority();
         }
         return 0;
@@ -71,7 +73,7 @@ public class BasicLight implements ILight {
 
     @Override
     public void addVehicle(Vehicle vehicle){
-        carsQueue.add(vehicle);
+        lane.addVehicle(vehicle);
     }
 
     @Override
@@ -80,16 +82,35 @@ public class BasicLight implements ILight {
     }
 
     @Override
-    public boolean isBlocked() {
+    public boolean isBlockedByPedestrians() {
         //no pedestrians - no blockage
         return false;
     }
 
-    public Queue<Vehicle> getCarsQueue() {
-        return carsQueue;
+    @Override
+    public List<Lane> getLanesList() {
+        return List.of(lane);
     }
 
-    public IndicatorLight getTrafficCycle() {
-        return indicatorLight;
+    @Override
+    public void addPedestrian(Pedestrian pedestrian) {}
+
+    @Override
+    public List<Pedestrian> pedestriansCrossing() {
+        return new ArrayList<>();
+    }
+
+    public int getCarsQueueSize() {
+        return lane.getAmountVehiclesInQueue();
+    }
+
+    public IndicatorLight getCurrentLight() {
+        return lane.getLight();
+    }
+
+    @Override
+    public String toString(){
+
+        return startDirection.toString() + " road; [" + lane.getLight().toString() + "]";
     }
 }
