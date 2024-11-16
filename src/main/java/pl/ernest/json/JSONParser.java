@@ -50,16 +50,10 @@ public class JSONParser {
         return commands;
     }
 
-    public static void createOutput(String outputPath, TrafficLights trafficLights){
+    public static void createOutput(String outputPath){
 
-        List<StepStatus> stepStatusList = new ArrayList<>();
-        for (ArrayList<Vehicle> step : trafficLights.getStepStatuses()) {
-            StepStatus status = new StepStatus();
-            for (Vehicle vehicle : step) {
-                status.leftVehicles.add(vehicle.toString());
-            }
-            stepStatusList.add(status);
-        }
+        Logger logger = Logger.getInstance();
+        List<StepStatus> stepStatusList = logger.getStepStatuses();
 
         try {
             ObjectMapper mapper = new ObjectMapper();

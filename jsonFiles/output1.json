@@ -1,11 +1,15 @@
 {
   "stepStatuses" : [ {
-    "leftVehicles" : [ "vehicle2", "vehicle1" ]
+    "leftVehicles" : [ "vehicle2", "vehicle1" ],
+    "newLightCycle" : [ ]
   }, {
-    "leftVehicles" : [ ]
+    "leftVehicles" : [ ],
+    "newLightCycle" : [ "east road; [YellowRed]", "west road; [YellowRed]", "north road; [Yellow]", "south road; [Yellow]" ]
   }, {
-    "leftVehicles" : [ "vehicle3" ]
+    "leftVehicles" : [ "vehicle3" ],
+    "newLightCycle" : [ "east road; [Green]", "west road; [Green]", "north road; [Red]", "south road; [Red]" ]
   }, {
-    "leftVehicles" : [ "vehicle4" ]
+    "leftVehicles" : [ ],
+    "newLightCycle" : [ "east road; [Yellow]", "west road; [Yellow]", "north road; [YellowRed]", "south road; [YellowRed]" ]
   } ]
 }
