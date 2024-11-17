@@ -1,6 +1,6 @@
 package pl.ernest.model;
 
-public record Pedestrian(String id, Road endRoad) {
+public record Pedestrian(String id, Road road) {
 
     @Override
     public String toString() {
