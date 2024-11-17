@@ -4,7 +4,11 @@ import pl.ernest.model.ILight;
 
 import java.util.Collection;
 
-public class BasicTurnsStrategy implements CalculateTurnsStrategy{
+public class BasicTurnsStrategy extends AbstractTurnsStrategy {
+    public BasicTurnsStrategy(int priorityConstant) {
+        super(priorityConstant);
+    }
+
     @Override
     public int calculateTurns(Collection<ILight> lights) {
         int greenPriority = 0;
@@ -20,6 +24,6 @@ public class BasicTurnsStrategy implements CalculateTurnsStrategy{
 
         if (allPriority == 0) return 0;
 
-        return greenPriority / allPriority;
+        return Math.ceilDiv(greenPriority * super.getPriorityConstant() , allPriority);
     }
 }
