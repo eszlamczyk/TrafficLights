@@ -1,6 +1,5 @@
 package pl.ernest;
 
-import pl.ernest.json.Logger;
 import pl.ernest.model.*;
 import pl.ernest.model.basicLights.BasicLight;
 import pl.ernest.command.ICommand;
@@ -39,7 +38,7 @@ public class BasicSimulation {
         ILight eastLight = new BasicLight(new LinkedList<>(), IndicatorLight.Yellow, Road.east);
         ILight westLight = new BasicLight(new LinkedList<>(), IndicatorLight.Yellow, Road.west);
 
-        int priorityConstant = 10;
+        int priorityConstant = 5;
 
         try {
             return new TrafficLights(northLight,eastLight,southLight,westLight, new BasicTurnsStrategy(priorityConstant));
