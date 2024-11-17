@@ -3,7 +3,6 @@ package pl.ernest.command;
 import pl.ernest.model.Pedestrian;
 import pl.ernest.model.Road;
 import pl.ernest.model.TrafficLights;
-import pl.ernest.model.Vehicle;
 
 public class AddPedestrianCommand implements ICommand{
     private final Pedestrian pedestrian;
