@@ -7,7 +7,6 @@ import pl.ernest.model.fancyLights.LaneTurn;
 
 import java.util.*;
 
-//basic light - 1 queue, for every turn
 public class BasicLight implements ILight {
 
     private final Logger logger = Logger.getInstance();
@@ -90,6 +89,11 @@ public class BasicLight implements ILight {
     @Override
     public List<Lane> getLanesList() {
         return List.of(lane);
+    }
+
+    @Override
+    public int getLightCycleSize() {
+        return lane.getNextLights().size() + 1;
     }
 
     @Override

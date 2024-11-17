@@ -47,10 +47,10 @@ public class Lane {
     public Vehicle getNextVehicle(){
         return laneQueue.remove();
     }
+
     public LaneTurn getTurn(){
         return turn;
     }
-
 
     public IndicatorLight getLight() {
         return light;
@@ -58,10 +58,6 @@ public class Lane {
 
     public Queue<IndicatorLight> getNextLights() {
         return nextLights;
-    }
-
-    public void addToLightQueue(IndicatorLight newLight){
-        nextLights.add(newLight);
     }
 
     public void nextLight(){

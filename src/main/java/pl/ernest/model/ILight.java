@@ -27,4 +27,6 @@ public interface ILight {
 
     List<Lane> getLanesList();
 
+    int getLightCycleSize();
+
 }

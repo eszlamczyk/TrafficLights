@@ -20,11 +20,22 @@ public class FancyLight implements ILight {
         this.lightPriority = lightPriority;
         this.startDirection = startDirection;
         checkLanePlacement();
+        checkLaneLightCycleSize();
         setPedestrianLight();
     }
 
     public FancyLight(List<Lane> lanes, Road startDirection) throws IncorrectLaneArrangementException {
         this(lanes,new ArrayList<>(),1,startDirection);
+    }
+
+    private void checkLaneLightCycleSize() throws IncorrectLaneArrangementException {
+        int size = lanes.getFirst().getNextLights().size();
+        for (Lane lane : lanes){
+            if (lane.getNextLights().size() != size) {
+                throw new IncorrectLaneArrangementException("All lanes must have the same light cycle size, " +
+                        "but mismatched sizes were found.");
+            }
+        }
     }
 
     private void checkLanePlacement() throws IncorrectLaneArrangementException{
@@ -57,7 +68,7 @@ public class FancyLight implements ILight {
         }
 
         if (necessaryLaneTurns.size() < 4){
-            throw new IncorrectLaneArrangementException("Every single direction is not covered");
+            throw new IncorrectLaneArrangementException("Not all directions are covered as required.");
         }
 
         // Check lane order and crashing paths
@@ -69,7 +80,9 @@ public class FancyLight implements ILight {
                 Lane lane2 = lanes.get(j);
 
                 if (isConflicting(lane1.getTurn(), lane2.getTurn())) {
-                    throw new IncorrectLaneArrangementException("Conflicting lane arrangement");
+                    throw new IncorrectLaneArrangementException("Conflicting lane arrangement: " +
+                            "mismatched lane directions.");
+
                 }
             }
         }
@@ -229,12 +242,19 @@ public class FancyLight implements ILight {
     }
 
     @Override
+    public int getLightCycleSize() {
+        return lanes.getFirst().getNextLights().size() + 1;
+    }
+
+    @Override
     public String toString(){
         StringBuilder resultString = new StringBuilder(startDirection.toString() + " road; [");
 
         for (Lane lane : lanes){
             resultString.append(lane.getLight().toString());
+            resultString.append(" ");
         }
+        resultString.setLength(resultString.length()-1);
         resultString.append("]");
         return resultString.toString();
     }
