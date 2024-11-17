@@ -68,18 +68,6 @@ public class LaneTest {
     }
 
     @Test
-    void addToLightQueueTest(){
-        lane.addToLightQueue(IndicatorLight.Yellow);
-
-        for (int i = 0; i < 5; i++) {
-            lane.nextLight();
-        }
-
-        assertEquals(5, lane.getNextLights().size());
-        assertEquals(IndicatorLight.Yellow,lane.getLight());
-    }
-
-    @Test
     void getSumPriorityTest(){
         BasicLight basicEmptyLight = new BasicLight(new LinkedList<>(), IndicatorLight.Green, Road.north);
 

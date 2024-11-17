@@ -1,0 +1,59 @@
+{
+  "stepStatuses" : [ {
+    "leftVehicles" : [ ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ "east road; [Red Red]", "west road; [Red Red]", "north road; [YellowRed Yellow Yellow]", "south road; [YellowRed Yellow Yellow]", "east road; [Red Red]", "west road; [Red Red]", "north road; [Green Red Red]", "south road; [Green Red Red]", "east road; [YellowRed YellowRed]", "west road; [Red Red]", "north road; [Yellow Red Red]", "south road; [Yellow Red Red]", "east road; [Green Green]", "west road; [Red Red]", "north road; [Red Red Red]", "south road; [Red Red Red]", "east road; [Yellow Yellow]", "west road; [YellowRed YellowRed]", "north road; [Red Red Red]", "south road; [Red Red Red]", "east road; [Red Red]", "west road; [Green Green]", "north road; [Red Red Red]", "south road; [Red Red Red]", "east road; [Red Red]", "west road; [Yellow Yellow]", "north road; [Red YellowRed YellowRed]", "south road; [Red YellowRed YellowRed]", "east road; [Red Red]", "west road; [Red Red]", "north road; [Red Green Green]", "south road; [Red Green Green]", "east road; [Red Red]", "west road; [Red Red]", "north road; [YellowRed Yellow Yellow]", "south road; [YellowRed Yellow Yellow]" ]
+  }, {
+    "leftVehicles" : [ ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ "east road; [Red Red]", "west road; [Red Red]", "north road; [Green Red Red]", "south road; [Green Red Red]" ]
+  }, {
+    "leftVehicles" : [ ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ "east road; [YellowRed YellowRed]", "west road; [Red Red]", "north road; [Yellow Red Red]", "south road; [Yellow Red Red]" ]
+  }, {
+    "leftVehicles" : [ ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ "east road; [Green Green]", "west road; [Red Red]", "north road; [Red Red Red]", "south road; [Red Red Red]" ]
+  }, {
+    "leftVehicles" : [ ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ "east road; [Yellow Yellow]", "west road; [YellowRed YellowRed]", "north road; [Red Red Red]", "south road; [Red Red Red]" ]
+  }, {
+    "leftVehicles" : [ ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ "east road; [Red Red]", "west road; [Green Green]", "north road; [Red Red Red]", "south road; [Red Red Red]" ]
+  }, {
+    "leftVehicles" : [ ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ ]
+  }, {
+    "leftVehicles" : [ "vehicle3" ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ "east road; [Red Red]", "west road; [Yellow Yellow]", "north road; [Red YellowRed YellowRed]", "south road; [Red YellowRed YellowRed]" ]
+  }, {
+    "leftVehicles" : [ "vehicle2", "vehicle1" ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ "east road; [Red Red]", "west road; [Red Red]", "north road; [Red Green Green]", "south road; [Red Green Green]" ]
+  }, {
+    "leftVehicles" : [ "vehicle10" ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ ]
+  }, {
+    "leftVehicles" : [ ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ ]
+  }, {
+    "leftVehicles" : [ ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ ]
+  }, {
+    "leftVehicles" : [ ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ ]
+  }, {
+    "leftVehicles" : [ ],
+    "leftPedestrians" : [ ],
+    "newLightCycle" : [ ]
+  } ]
+}

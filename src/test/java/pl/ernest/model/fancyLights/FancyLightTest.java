@@ -56,7 +56,7 @@ public class FancyLightTest {
     @Test
     void checkSufficientLanesTest(){
 
-        String message = "Every single direction is not covered";
+        String message = "Not all directions are covered as required.";
         testLanesWithMessage(new Lane[]{uTurnLane}, message);
         testLanesWithMessage(new Lane[]{uTurnLane, leftLane}, message);
         testLanesWithMessage(new Lane[]{uTurnLane, leftLane, straightLane}, message);
@@ -71,7 +71,7 @@ public class FancyLightTest {
 
     @Test
     void checkLanesProperOrder(){
-        String message = "Conflicting lane arrangement";
+        String message = "Conflicting lane arrangement: mismatched lane directions.";
         //left
         testLanesWithMessage(new Lane[]{leftLane, uTurnLane , straightRightLane}, message);
 
@@ -109,6 +109,16 @@ public class FancyLightTest {
         testLanesWithMessage(new Lane[]{rightLane, leftStraightRightLane}, message);
         testLanesWithMessage(new Lane[]{rightLane, straightLane, leftLane}, message);
         testLanesWithMessage(new Lane[]{rightLane, straightRightLane, leftLane}, message);
+    }
+
+    @Test
+    void differentLengthsLightCycleTest(){
+        Queue<IndicatorLight> longerLightCycle = new LinkedList<>(basicLightCycle);
+        longerLightCycle.add(IndicatorLight.YellowRed);
+        Lane longerLightCycleLane = new Lane(LaneTurn.Right, longerLightCycle, new LinkedList<>());
+
+        testLanesWithMessage(new Lane[]{leftLane, straightLane,longerLightCycleLane},
+                "All lanes must have the same light cycle size, but mismatched sizes were found.");
     }
 
     void testLanesWithMessage(Lane[] lanes, String message){
@@ -201,25 +211,6 @@ public class FancyLightTest {
         assertEquals(IndicatorLight.Red, rightLane.getLight());
     }
 
-    @Test
-    void differentLengthsLightCycleTest(){
-        Queue<IndicatorLight> longerLightCycle = new LinkedList<>(basicLightCycle);
-        //new cycle -> Green/Yellow/Red/YellowRed/YellowRed
-        longerLightCycle.add(IndicatorLight.YellowRed);
-        Lane longerLightCycleLane = new Lane(LaneTurn.Right, longerLightCycle, new LinkedList<>());
-
-        FancyLight fancyLight = helperFancyLightConstructor(new Lane[]{leftLane, straightLane,longerLightCycleLane});
-
-        fancyLight.nextCycle();
-        fancyLight.nextCycle();
-        fancyLight.nextCycle();
-        fancyLight.nextCycle();
-
-        assertEquals(IndicatorLight.Green, leftLane.getLight());
-        assertEquals(IndicatorLight.Green, straightLane.getLight());
-        assertEquals(IndicatorLight.YellowRed, longerLightCycleLane.getLight());
-
-    }
 
     @Test
     void moveCarsIntoIntersectionTest(){
