@@ -2,6 +2,8 @@ package pl.ernest.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pl.ernest.command.AddPedestrianCommand;
+import pl.ernest.model.Pedestrian;
 import pl.ernest.model.TrafficLights;
 import pl.ernest.command.AddVehicleCommand;
 import pl.ernest.command.ICommand;
@@ -39,6 +41,11 @@ public class JSONParser {
                     commands.add(new AddVehicleCommand(newVehicle, trafficLights,startRoad));
                     break;
 
+                case "addPedestrian":
+                    String pedId = commandNode.get("pedestrianId").asText();
+                    Road road = Road.valueOf(commandNode.get("road").asText());
+                    Pedestrian ped = new Pedestrian(pedId,road);
+                    commands.add(new AddPedestrianCommand(ped,trafficLights,road));
                 case "step":
                     commands.add(new StepCommand(trafficLights));
                     break;
@@ -53,7 +60,7 @@ public class JSONParser {
     public static void createOutput(String outputPath){
 
         Logger logger = Logger.getInstance();
-        List<StepStatus> stepStatusList = logger.getStepStatuses();
+        List<IStepStatus> stepStatusList = logger.getStepStatuses();
 
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -63,8 +70,5 @@ public class JSONParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
     }
 }

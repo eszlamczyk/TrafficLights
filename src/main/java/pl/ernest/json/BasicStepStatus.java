@@ -5,11 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StepStatus {
+public class BasicStepStatus implements IStepStatus{
+
     @JsonProperty("leftVehicles")
     public List<String> leftVehicles = new ArrayList<>();
-
-    @JsonProperty("newLightCycle")
-    public List<String> newLightCycle = new ArrayList<>();
-
 }
