@@ -70,7 +70,7 @@ public class LoggerTest {
     @Test
     public void testLogNewCycle() {
         Logger logger = Logger.getInstance();
-        ILight light = new BasicLight(new LinkedList<Vehicle>(), IndicatorLight.Green,Road.north);
+        ILight light = new BasicLight(new LinkedList<>(), IndicatorLight.Green,Road.north);
         logger.logNewCycle(light);
         assertTrue(logger.getCurrentFancyStep().newLightCycle.contains(Road.north + " road; [" + IndicatorLight.Green + "]"));
     }
