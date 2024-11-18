@@ -29,4 +29,6 @@ public interface ILight {
 
     int getLightCycleSize();
 
+    void forcePedestrianLightRed();
+
 }

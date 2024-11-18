@@ -104,6 +104,9 @@ public class BasicLight implements ILight {
         return new ArrayList<>();
     }
 
+    @Override
+    public void forcePedestrianLightRed() {}
+
     public int getCarsQueueSize() {
         return lane.getAmountVehiclesInQueue();
     }

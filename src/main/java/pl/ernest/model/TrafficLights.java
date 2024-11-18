@@ -54,9 +54,6 @@ public class TrafficLights {
     private static final Set<LaneTurn> STRAIGHT_LEFT_COLLIDERS = Set.of(
             LaneTurn.Straight, LaneTurn.StraightRight, LaneTurn.LeftStraight, LaneTurn.LeftStraightRight, LaneTurn.Left
     );
-    private static final Set<LaneTurn> RIGHT_COLLIDERS = Set.of(
-            LaneTurn.LeftStraight, LaneTurn.Straight, LaneTurn.StraightRight, LaneTurn.LeftStraightRight
-    );
     private static final Set<LaneTurn> LEFT_COLLIDERS = Set.of(
             LaneTurn.Left, LaneTurn.LeftStraight, LaneTurn.LeftStraightRight, LaneTurn.UTurn, LaneTurn.Straight,
             LaneTurn.StraightRight
@@ -76,7 +73,7 @@ public class TrafficLights {
             case Left, UTurn ->
                     checkPossibleCollision(roadDirection, lane.isTrafficArrow());
             case LeftStraightRight -> {
-                checkPossibleCollision(roadDirection, RIGHT_COLLIDERS);
+                checkPossibleCollision(roadDirection, STRAIGHT_COLLIDERS);
                 checkPossibleCollision(roadDirection, LEFT_COLLIDERS);
                 checkPossibleCollision(roadDirection, lane.isTrafficArrow());
             }
@@ -119,39 +116,38 @@ public class TrafficLights {
 
     private List<Boolean> canExit(Road road){
         List<Boolean> canExitList = new ArrayList<>();
-        if (!waitingVehicles.containsKey(road)){
-            return canExitList;
-        }
         for (Optional<IVehicle> optionalVehicle : waitingVehicles.get(road)){
             //no vehicle at this lane
-            if (optionalVehicle.isEmpty()){
+            if (optionalVehicle.isEmpty()) {
                 canExitList.add(false);
-            }else {
-                IVehicle vehicle = optionalVehicle.get();
-                //pedestrians check
-                if(lightMap.get(vehicle.endRoad()).isBlockedByPedestrians()){
-                    canExitList.add(false);
-                    continue;
-                }
-                //right and straight - can go there no matter what
-                if (vehicle.endRoad() == road.getRoadOnTheRight() ||
-                        vehicle.endRoad() == road.getOppositeRoad()) {
-                    canExitList.add(true);
-                    continue;
-                }
-                //left turn - check if ANY of opposite side are colliding
-                boolean exitPossible = true;
-                for (Optional<IVehicle> optionalOppositeVehicle : waitingVehicles.get(road.getOppositeRoad())){
-                    if (optionalOppositeVehicle.isPresent() &&
-                            (optionalVehicle.get().endRoad() == road ||
-                                    optionalOppositeVehicle.get().endRoad() == road.getRoadOnTheLeft())){
-                        exitPossible = false;
-                    }
+                continue;
+            }
+            IVehicle vehicle = optionalVehicle.get();
 
-                canExitList.add(exitPossible);
+            if (lightMap.get(vehicle.endRoad()).isBlockedByPedestrians()) {
+                canExitList.add(false);
+                continue;
             }
+
+            if (vehicle.endRoad() == road.getRoadOnTheRight() ||
+                    vehicle.endRoad() == road.getOppositeRoad()) {
+                canExitList.add(true);
+                continue;
             }
+
+            boolean canTurnLeft = true;
+            for (Optional<IVehicle> oppositeVehicle : waitingVehicles.get(road.getOppositeRoad())) {
+                if (oppositeVehicle.isPresent() && (
+                        oppositeVehicle.get().endRoad() == road ||
+                                oppositeVehicle.get().endRoad() == road.getRoadOnTheLeft())) {
+                    canTurnLeft = false;
+                    break;
+                }
+            }
+
+            canExitList.add(canTurnLeft);
         }
+
         return canExitList;
     }
 
@@ -159,6 +155,7 @@ public class TrafficLights {
     public void stepSimulation(){
         if (turnsInCycleLeft <= 0){
             lightMap.forEach((road, iLight) -> iLight.nextCycle());
+            overridePedestrianLight();
             this.turnsInCycleLeft = turnsStrategy.calculateTurns(lightMap.values());
         }
 
@@ -197,10 +194,59 @@ public class TrafficLights {
         logger.addStep();
     }
 
+    private void overridePedestrianLight() {
+        lightMap.forEach((road, iLight) -> {
+            if (shouldOverridePedestrianLight(road)) {
+                iLight.forcePedestrianLightRed();
+            }
+        });
+    }
+
+    private boolean shouldOverridePedestrianLight(Road road) {
+        return isOppositeRoadBlocking(road) || isRightRoadBlocking(road) || isLeftRoadBlocking(road);
+    }
+
+    private boolean isOppositeRoadBlocking(Road road) {
+        return lightMap.get(road.getOppositeRoad()).getLanesList()
+                .stream()
+                .anyMatch(this::isStraightGreen);
+    }
+
+    private boolean isRightRoadBlocking(Road road) {
+        return lightMap.get(road.getRoadOnTheRight()).getLanesList()
+                .stream()
+                .anyMatch(this::isLeftGreen);
+    }
+
+    private boolean isLeftRoadBlocking(Road road) {
+        return lightMap.get(road.getRoadOnTheLeft()).getLanesList()
+                .stream()
+                .anyMatch(this::isRightGreen);
+    }
+
+    private boolean isStraightGreen(Lane lane) {
+        return Set.of(LaneTurn.Straight, LaneTurn.StraightRight, LaneTurn.LeftStraightRight, LaneTurn.LeftStraight)
+                .contains(lane.getTurn())
+                && lane.getLight() == IndicatorLight.Green;
+    }
+
+    private boolean isLeftGreen(Lane lane) {
+        return Set.of(LaneTurn.Left, LaneTurn.LeftStraight, LaneTurn.LeftStraightRight).contains(lane.getTurn())
+                && lane.isTrafficArrow() && lane.getLight() == IndicatorLight.Green;
+    }
+
+    private boolean isRightGreen(Lane lane) {
+        return Set.of(LaneTurn.Right, LaneTurn.StraightRight, LaneTurn.LeftStraightRight).contains(lane.getTurn())
+                && lane.isTrafficArrow() && lane.getLight() == IndicatorLight.Green;
+    }
+
     private void tryExiting(Road road, List<Boolean> canExitList){
         for (int i = 0; i < lightMap.get(road).getAmountOfLanes(); i++) {
-            if (canExitList.get(i) && waitingVehicles.get(road).get(i).isPresent()){
-                logger.logLeftVehicle(waitingVehicles.get(road).get(i).get());
+
+            Optional<IVehicle> vehicle = waitingVehicles.get(road).get(i);
+
+            if (canExitList.get(i) && vehicle.isPresent()){
+                logger.logLeftVehicle(vehicle.get());
                 waitingVehicles.get(road).set(i,Optional.empty());
             }
         }

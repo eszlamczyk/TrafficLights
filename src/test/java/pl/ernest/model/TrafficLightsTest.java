@@ -35,7 +35,6 @@ class TrafficLightsTest {
     void setUp() throws CollidingLightConfigurationException {
         MockitoAnnotations.openMocks(this);
 
-        // Mocking the turn strategy
         when(turnsStrategy.calculateTurns(anyCollection())).thenReturn(4);
 
         trafficLights = new TrafficLights(
