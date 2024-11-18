@@ -83,26 +83,29 @@ public class FancySimulation {
         ILight northLight = new FancyLight(Arrays.asList(
                 new Lane(LaneTurn.Left,new LinkedList<>(qLefts),new LinkedList<>()),
                 new Lane(LaneTurn.Straight,new LinkedList<>(qMain),new LinkedList<>()),
-                new Lane(LaneTurn.StraightRight,new LinkedList<>(qMain),new LinkedList<>())),
+                new Lane(LaneTurn.StraightRight,new LinkedList<>(qMain),new LinkedList<>()),
+                new Lane(LaneTurn.Right,new LinkedList<>(qMain),new LinkedList<>(), false,true)),
                     new ArrayList<>(),2,Road.north);
 
         ILight southLight = new FancyLight(Arrays.asList(
                 new Lane(LaneTurn.Left,new LinkedList<>(qLefts),new LinkedList<>()),
                 new Lane(LaneTurn.Straight,new LinkedList<>(qMain),new LinkedList<>()),
-                new Lane(LaneTurn.StraightRight,new LinkedList<>(qMain),new LinkedList<>())),
+                new Lane(LaneTurn.StraightRight,new LinkedList<>(qMain),new LinkedList<>()),
+                new Lane(LaneTurn.Right,new LinkedList<>(qMain),new LinkedList<>(), false,true)),
                     new ArrayList<>(),2,Road.south);
+
         ILight eastLight = new FancyLight(Arrays.asList(
-                new Lane(LaneTurn.LeftStraight, new LinkedList<>(qEast),new LinkedList<>(), true),
+                new Lane(LaneTurn.LeftStraight, new LinkedList<>(qEast),new LinkedList<>(), true, false),
                 new Lane(LaneTurn.StraightRight, new LinkedList<>(qEast),new LinkedList<>())
         ),Road.east);
 
         ILight westLight = new FancyLight(Arrays.asList(
-                new Lane(LaneTurn.LeftStraight, new LinkedList<>(qWest),new LinkedList<>(), true),
+                new Lane(LaneTurn.LeftStraight, new LinkedList<>(qWest),new LinkedList<>(), true, false),
                 new Lane(LaneTurn.StraightRight, new LinkedList<>(qWest),new LinkedList<>())
         ),Road.west);
 
 
-        int priorityConstant = 10;
+        int priorityConstant = 5;
 
         try {
             return new TrafficLights(northLight,eastLight,southLight,westLight, new BasicTurnsStrategy(priorityConstant));

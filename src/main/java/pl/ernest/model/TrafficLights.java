@@ -10,7 +10,7 @@ public class TrafficLights {
     private final Logger logger = Logger.getInstance();
     private final AbstractTurnsStrategy turnsStrategy;
     private final Map<Road, ILight> lightMap;
-    private final Map<Road,List<Optional<Vehicle>>> waitingVehicles;
+    private final Map<Road,List<Optional<IVehicle>>> waitingVehicles;
     private int turnsInCycleLeft;
 
     public TrafficLights(ILight northLight, ILight eastLight, ILight southLight, ILight westLight,
@@ -122,12 +122,12 @@ public class TrafficLights {
         if (!waitingVehicles.containsKey(road)){
             return canExitList;
         }
-        for (Optional<Vehicle> optionalVehicle : waitingVehicles.get(road)){
+        for (Optional<IVehicle> optionalVehicle : waitingVehicles.get(road)){
             //no vehicle at this lane
             if (optionalVehicle.isEmpty()){
                 canExitList.add(false);
             }else {
-                Vehicle vehicle = optionalVehicle.get();
+                IVehicle vehicle = optionalVehicle.get();
                 //pedestrians check
                 if(lightMap.get(vehicle.endRoad()).isBlockedByPedestrians()){
                     canExitList.add(false);
@@ -141,7 +141,7 @@ public class TrafficLights {
                 }
                 //left turn - check if ANY of opposite side are colliding
                 boolean exitPossible = true;
-                for (Optional<Vehicle> optionalOppositeVehicle : waitingVehicles.get(road.getOppositeRoad())){
+                for (Optional<IVehicle> optionalOppositeVehicle : waitingVehicles.get(road.getOppositeRoad())){
                     if (optionalOppositeVehicle.isPresent() &&
                             (optionalVehicle.get().endRoad() == road ||
                                     optionalOppositeVehicle.get().endRoad() == road.getRoadOnTheLeft())){
@@ -164,7 +164,7 @@ public class TrafficLights {
 
         lightMap.forEach((road, iLight) -> {
             if(!waitingVehicles.containsKey(road)){
-                List<Optional<Vehicle>> potentialVehicles = iLight.moveCarsIntoIntersection();
+                List<Optional<IVehicle>> potentialVehicles = iLight.moveCarsIntoIntersection();
                 waitingVehicles.put(road, potentialVehicles);
             }else{
                 for (int i = 0; i < iLight.getAmountOfLanes(); i++) {
@@ -200,14 +200,14 @@ public class TrafficLights {
     private void tryExiting(Road road, List<Boolean> canExitList){
         for (int i = 0; i < lightMap.get(road).getAmountOfLanes(); i++) {
             if (canExitList.get(i) && waitingVehicles.get(road).get(i).isPresent()){
-                logger.logLeftCar(waitingVehicles.get(road).get(i).get());
+                logger.logLeftVehicle(waitingVehicles.get(road).get(i).get());
                 waitingVehicles.get(road).set(i,Optional.empty());
             }
         }
     }
 
 
-    public void addVehicle(Road startRoad, Vehicle vehicle){
+    public void addVehicle(Road startRoad, IVehicle vehicle){
         this.lightMap.get(startRoad).addVehicle(vehicle);
     }
 

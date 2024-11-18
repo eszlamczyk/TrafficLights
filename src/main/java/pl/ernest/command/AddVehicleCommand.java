@@ -1,19 +1,19 @@
 package pl.ernest.command;
 
+import pl.ernest.model.IVehicle;
 import pl.ernest.model.TrafficLights;
 import pl.ernest.model.Road;
-import pl.ernest.model.Vehicle;
 
 public class AddVehicleCommand implements ICommand{
 
-    private final Vehicle Vehicle;
+    private final IVehicle vehicle;
 
     private final TrafficLights trafficLights;
 
     private final Road startRoad;
 
-    public AddVehicleCommand(Vehicle vehicle, TrafficLights trafficLights, Road startRoad) {
-        Vehicle = vehicle;
+    public AddVehicleCommand(IVehicle vehicle, TrafficLights trafficLights, Road startRoad) {
+        this.vehicle = vehicle;
         this.trafficLights = trafficLights;
         this.startRoad = startRoad;
     }
@@ -21,6 +21,6 @@ public class AddVehicleCommand implements ICommand{
     @Override
     public void execute() {
         //System.out.println("Executing Add");
-        this.trafficLights.addVehicle(startRoad, Vehicle);
+        this.trafficLights.addVehicle(startRoad, vehicle);
     }
 }

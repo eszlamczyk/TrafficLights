@@ -1,8 +1,8 @@
 package pl.ernest.json;
 
 import pl.ernest.model.ILight;
+import pl.ernest.model.IVehicle;
 import pl.ernest.model.Pedestrian;
-import pl.ernest.model.Vehicle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class Logger {
         return logger;
     }
 
-    public void logLeftCar(Vehicle vehicle){
+    public void logLeftVehicle(IVehicle vehicle){
         currentBasicStep.leftVehicles.add(vehicle.toString());
         currentFancyStep.leftVehicles.add(vehicle.toString());
     }

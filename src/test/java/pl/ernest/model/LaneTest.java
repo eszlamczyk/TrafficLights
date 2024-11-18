@@ -17,13 +17,13 @@ public class LaneTest {
 
     @BeforeEach
     void setUp(){
-        Queue<Vehicle> vehicles = new LinkedList<>();
+        Queue<IVehicle> vehicles = new LinkedList<>();
 
-        vehicles.add(new Vehicle("Car1", Road.north));
-        vehicles.add(new Vehicle("Car2", Road.east));
-        vehicles.add(new Vehicle("Car3", Road.west));
-        vehicles.add(new Vehicle("ImportantCar", Road.north,3));
-        vehicles.add(new Vehicle("Bus", Road.south,5));
+        vehicles.add(new Car("Car1", Road.north));
+        vehicles.add(new Car("Car2", Road.east));
+        vehicles.add(new Car("Car3", Road.west));
+        vehicles.add(new Car("ImportantCar", Road.north,3));
+        vehicles.add(new Car("Bus", Road.south,5));
 
         lights = new LinkedList<>();
         lights.add(IndicatorLight.Green);

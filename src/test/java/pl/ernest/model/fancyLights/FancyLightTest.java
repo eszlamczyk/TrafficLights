@@ -2,11 +2,7 @@ package pl.ernest.model.fancyLights;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pl.ernest.model.IndicatorLight;
-import pl.ernest.model.Pedestrian;
-import pl.ernest.model.Road;
-import pl.ernest.model.Vehicle;
-import pl.ernest.model.Lane;
+import pl.ernest.model.*;
 
 import java.util.*;
 
@@ -216,13 +212,13 @@ public class FancyLightTest {
     void moveCarsIntoIntersectionTest(){
         FancyLight fancyLight = helperFancyLightConstructor(new Lane[]{leftLane, straightLane, rightLane});
 
-        Vehicle leftCar2 = new Vehicle("leftCar2", left);
+        Car leftCar2 = new Car("leftCar2", left);
 
-        leftLane.addVehicle(new Vehicle("leftCar", left));
+        leftLane.addVehicle(new Car("leftCar", left));
         leftLane.addVehicle(leftCar2);
-        rightLane.addVehicle(new Vehicle("rightCar", right));
+        rightLane.addVehicle(new Car("rightCar", right));
 
-        List<Optional<Vehicle>> movedVehicles = fancyLight.moveCarsIntoIntersection();
+        List<Optional<IVehicle>> movedVehicles = fancyLight.moveCarsIntoIntersection();
 
         assertTrue(movedVehicles.getFirst().isPresent());
         assertTrue(movedVehicles.get(1).isEmpty());
@@ -239,9 +235,9 @@ public class FancyLightTest {
     void notGreenMoveCarsIntoIntersectionTest(){
         FancyLight fancyLight = helperFancyLightConstructor(new Lane[]{leftLane, straightLane, rightLane});
 
-        leftLane.addVehicle(new Vehicle("leftCar", left));
-        leftLane.addVehicle(new Vehicle("leftCar2", left));
-        rightLane.addVehicle(new Vehicle("rightCar", right));
+        leftLane.addVehicle(new Car("leftCar", left));
+        leftLane.addVehicle(new Car("leftCar2", left));
+        rightLane.addVehicle(new Car("rightCar", right));
 
         //Yellow
         fancyLight.nextCycle();
@@ -258,8 +254,8 @@ public class FancyLightTest {
     }
 
     private void checkEverythingEmpty(FancyLight fancyLight){
-        List<Optional<Vehicle>> optionalList = fancyLight.moveCarsIntoIntersection();
-        for (Optional<Vehicle> optional : optionalList){
+        List<Optional<IVehicle>> optionalList = fancyLight.moveCarsIntoIntersection();
+        for (Optional<IVehicle> optional : optionalList){
             assertTrue(optional.isEmpty());
         }
     }
@@ -269,14 +265,14 @@ public class FancyLightTest {
     void moveCarIntoIntersectionTest(){
         FancyLight fancyLight = helperFancyLightConstructor(new Lane[]{leftLane, straightLane, rightLane});
 
-        Vehicle leftCar = new Vehicle("leftCar", left);
+        Car leftCar = new Car("leftCar", left);
 
         leftLane.addVehicle(leftCar);
-        leftLane.addVehicle(new Vehicle("leftCar2", left));
-        rightLane.addVehicle(new Vehicle("rightCar", right));
+        leftLane.addVehicle(new Car("leftCar2", left));
+        rightLane.addVehicle(new Car("rightCar", right));
 
-        Optional<Vehicle> leftVehicle = fancyLight.moveCarIntoIntersectionFromLane(0);
-        Optional<Vehicle> straightVehicle = fancyLight.moveCarIntoIntersectionFromLane(1);
+        Optional<IVehicle> leftVehicle = fancyLight.moveCarIntoIntersectionFromLane(0);
+        Optional<IVehicle> straightVehicle = fancyLight.moveCarIntoIntersectionFromLane(1);
 
         assertTrue(leftVehicle.isPresent());
         assertEquals(leftCar, leftVehicle.get());
@@ -291,14 +287,14 @@ public class FancyLightTest {
     void notGreenMoveCarIntoIntersectionTest(){
         FancyLight fancyLight = helperFancyLightConstructor(new Lane[]{leftLane, straightLane, rightLane});
 
-        leftLane.addVehicle(new Vehicle("leftCar", left));
-        leftLane.addVehicle(new Vehicle("leftCar2", left));
-        rightLane.addVehicle(new Vehicle("rightCar", right));
+        leftLane.addVehicle(new Car("leftCar", left));
+        leftLane.addVehicle(new Car("leftCar2", left));
+        rightLane.addVehicle(new Car("rightCar", right));
 
         for (int i = 0; i < 3; i++) {
             fancyLight.nextCycle();
-            Optional<Vehicle> leftVehicle = fancyLight.moveCarIntoIntersectionFromLane(0);
-            Optional<Vehicle> straightVehicle = fancyLight.moveCarIntoIntersectionFromLane(1);
+            Optional<IVehicle> leftVehicle = fancyLight.moveCarIntoIntersectionFromLane(0);
+            Optional<IVehicle> straightVehicle = fancyLight.moveCarIntoIntersectionFromLane(1);
 
             assertTrue(leftVehicle.isEmpty());
             assertTrue(straightVehicle.isEmpty());
@@ -314,10 +310,10 @@ public class FancyLightTest {
     void getSumPriority(){
         FancyLight fancyLight = helperFancyLightConstructor(new Lane[]{leftLane, straightLane, rightLane});
 
-        leftLane.addVehicle(new Vehicle("leftCar", left));
-        leftLane.addVehicle(new Vehicle("leftCar2", left));
-        rightLane.addVehicle(new Vehicle("rightCar", right));
-        rightLane.addVehicle(new Vehicle("rightBus", right, 3));
+        leftLane.addVehicle(new Car("leftCar", left));
+        leftLane.addVehicle(new Car("leftCar2", left));
+        rightLane.addVehicle(new Car("rightCar", right));
+        rightLane.addVehicle(new Car("rightBus", right, 3));
 
         fancyLight.addPedestrian(new Pedestrian("ped1", Road.east));
         fancyLight.addPedestrian(new Pedestrian("ped2", Road.east));
@@ -332,10 +328,10 @@ public class FancyLightTest {
     void getGreenPriority(){
         FancyLight fancyLight = helperFancyLightConstructor(new Lane[]{leftLane, straightLane, rightLane});
 
-        leftLane.addVehicle(new Vehicle("leftCar", left));
-        leftLane.addVehicle(new Vehicle("leftCar2", left));
-        rightLane.addVehicle(new Vehicle("rightCar", right));
-        rightLane.addVehicle(new Vehicle("rightBus", right, 3));
+        leftLane.addVehicle(new Car("leftCar", left));
+        leftLane.addVehicle(new Car("leftCar2", left));
+        rightLane.addVehicle(new Car("rightCar", right));
+        rightLane.addVehicle(new Car("rightBus", right, 3));
 
         fancyLight.addPedestrian(new Pedestrian("ped1", Road.east));
         fancyLight.addPedestrian(new Pedestrian("ped2", Road.east));
@@ -344,8 +340,8 @@ public class FancyLightTest {
         FancyLight fancyNegativePriorityLight =
                 helperFancyLightConstructor(new Lane[]{uTurnLane, leftStraightRightLane});
 
-        fancyNegativePriorityLight.addVehicle(new Vehicle("car", uTurn));
-        fancyNegativePriorityLight.addVehicle(new Vehicle("car2", straight));
+        fancyNegativePriorityLight.addVehicle(new Car("car", uTurn));
+        fancyNegativePriorityLight.addVehicle(new Car("car2", straight));
 
         fancyNegativePriorityLight.addPedestrian(new Pedestrian("ped1", Road.south));
         fancyNegativePriorityLight.addPedestrian(new Pedestrian("ped1", Road.south));
@@ -368,14 +364,14 @@ public class FancyLightTest {
     void addCarBaseTest(){
         FancyLight fancyLight = helperFancyLightConstructor(new Lane[]{leftLane, straightLane, rightLane});
 
-        Vehicle carUTurn1 = new Vehicle("carUTurn1", uTurn);
-        Vehicle carLeft1 = new Vehicle("carLeft1", left);
-        Vehicle carStraight1 = new Vehicle("carStraight1", straight);
-        Vehicle carRight1 = new Vehicle("carRight1", right);
-        Vehicle carRight2 = new Vehicle("carRight2", right);
-        Vehicle carStraight2 = new Vehicle("carStraight2", straight);
-        Vehicle carLeft2 = new Vehicle("carLeft2", left);
-        Vehicle carUTurn2 = new Vehicle("carUTurn2", uTurn);
+        Car carUTurn1 = new Car("carUTurn1", uTurn);
+        Car carLeft1 = new Car("carLeft1", left);
+        Car carStraight1 = new Car("carStraight1", straight);
+        Car carRight1 = new Car("carRight1", right);
+        Car carRight2 = new Car("carRight2", right);
+        Car carStraight2 = new Car("carStraight2", straight);
+        Car carLeft2 = new Car("carLeft2", left);
+        Car carUTurn2 = new Car("carUTurn2", uTurn);
 
 
         fancyLight.addVehicle(carUTurn1);
@@ -409,10 +405,10 @@ public class FancyLightTest {
         FancyLight fancyLight =
                 helperFancyLightConstructor(new Lane[]{leftLane, straightLane, rightLane, additionalRightLane});
 
-        Vehicle carRight1 = new Vehicle("carRight1", right);
-        Vehicle carRight2 = new Vehicle("carRight2", right);
-        Vehicle carRight3 = new Vehicle("carRight3", right);
-        Vehicle carRight4 = new Vehicle("carRight4", right);
+        Car carRight1 = new Car("carRight1", right);
+        Car carRight2 = new Car("carRight2", right);
+        Car carRight3 = new Car("carRight3", right);
+        Car carRight4 = new Car("carRight4", right);
 
 
         fancyLight.addVehicle(carRight1);
@@ -436,11 +432,11 @@ public class FancyLightTest {
         FancyLight fancyLight =
                 helperFancyLightConstructor(new Lane[]{leftLane, additionalLeftLane, straightLane, rightLane});
 
-        Vehicle carLeft1 = new Vehicle("carLeft1", left);
-        Vehicle carUTurn1 = new Vehicle("carUTurn1", uTurn);
-        Vehicle carUTurn2 = new Vehicle("carUTurn2", uTurn);
-        Vehicle carLeft2 = new Vehicle("carLeft2", left);
-        Vehicle carUTurn3 = new Vehicle("carUTurn3", uTurn);
+        Car carLeft1 = new Car("carLeft1", left);
+        Car carUTurn1 = new Car("carUTurn1", uTurn);
+        Car carUTurn2 = new Car("carUTurn2", uTurn);
+        Car carLeft2 = new Car("carLeft2", left);
+        Car carUTurn3 = new Car("carUTurn3", uTurn);
 
 
         fancyLight.addVehicle(carLeft1);
@@ -466,12 +462,12 @@ public class FancyLightTest {
         FancyLight fancyLight =
                 helperFancyLightConstructor(new Lane[]{leftLane, leftStraightLane, straightLane, rightLane});
 
-        Vehicle carLeft1 = new Vehicle("carLeft1", left);
-        Vehicle carLeft2 = new Vehicle("carLeft2", left);
-        Vehicle carLeft3 = new Vehicle("carLeft3", left);
-        Vehicle carStraight1 = new Vehicle("carStraight1", straight);
-        Vehicle carStraight2 = new Vehicle("carStraight2", straight);
-        Vehicle carStraight3 = new Vehicle("carStraight3", straight);
+        Car carLeft1 = new Car("carLeft1", left);
+        Car carLeft2 = new Car("carLeft2", left);
+        Car carLeft3 = new Car("carLeft3", left);
+        Car carStraight1 = new Car("carStraight1", straight);
+        Car carStraight2 = new Car("carStraight2", straight);
+        Car carStraight3 = new Car("carStraight3", straight);
 
 
         fancyLight.addVehicle(carLeft1);
@@ -501,12 +497,12 @@ public class FancyLightTest {
         FancyLight fancyLight =
                 helperFancyLightConstructor(new Lane[]{leftLane, straightLane, straightRightLane, rightLane});
 
-        Vehicle carStraight1 = new Vehicle("carStraight1", straight);
-        Vehicle carStraight2 = new Vehicle("carStraight2", straight);
-        Vehicle carStraight3 = new Vehicle("carStraight3", straight);
-        Vehicle carRight1 = new Vehicle("carRight1", right);
-        Vehicle carRight2 = new Vehicle("carRight2", right);
-        Vehicle carRight3 = new Vehicle("carRight3", right);
+        Car carStraight1 = new Car("carStraight1", straight);
+        Car carStraight2 = new Car("carStraight2", straight);
+        Car carStraight3 = new Car("carStraight3", straight);
+        Car carRight1 = new Car("carRight1", right);
+        Car carRight2 = new Car("carRight2", right);
+        Car carRight3 = new Car("carRight3", right);
 
         fancyLight.addVehicle(carRight1);
         fancyLight.addVehicle(carStraight1);
@@ -574,6 +570,31 @@ public class FancyLightTest {
         for (int i = 0; i < 9; i++) {
             assertEquals(expectedList.get(i), returnList.get(i));
         }
+    }
+
+    @Test
+    void addCarWithBusLaneTest(){
+        Lane busLane = new Lane(LaneTurn.Right,basicLightCycle, new LinkedList<>(),false,true);
+
+        FancyLight fancyLight = helperFancyLightConstructor(new Lane[]{leftStraightLane, rightLane, busLane});
+        Car carRight1 = new Car("carRight1", right);
+        Car carRight2 = new Car("carRight2", right);
+        Bus busRight1 = new Bus("busRight1", right);
+        Bus busRight2 = new Bus("busRight2", right);
+        Bus busRight3 = new Bus("busRight3", right);
+
+        fancyLight.addVehicle(carRight1);
+        fancyLight.addVehicle(carRight2);
+        fancyLight.addVehicle(busRight1);
+        fancyLight.addVehicle(busRight2);
+        fancyLight.addVehicle(busRight3);
+
+        assertEquals(carRight1, rightLane.getNextVehicle());
+        assertEquals(carRight2, rightLane.getNextVehicle());
+        assertEquals(busRight3, rightLane.getNextVehicle());
+
+        assertEquals(busRight1, busLane.getNextVehicle());
+        assertEquals(busRight2, busLane.getNextVehicle());
     }
 
     @Test

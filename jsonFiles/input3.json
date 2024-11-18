@@ -17,6 +17,8 @@
     { "type": "step" },
     { "type": "addVehicle", "vehicleId": "vehicle10", "startRoad": "south", "endRoad": "north" },
     { "type": "addVehicle", "vehicleId": "vehicle11", "startRoad": "west", "endRoad": "north" },
+    { "type": "addVehicle", "vehicleId": "bus1", "vehicleType": "bus", "startRoad": "north", "endRoad": "west" },
+    { "type": "addVehicle", "vehicleId": "bus2", "vehicleType": "bus", "startRoad": "south", "endRoad": "east" },
     { "type": "step" },
     { "type": "addPedestrian", "pedestrianId": "pedestrian4", "road": "east" },
     { "type": "step" },

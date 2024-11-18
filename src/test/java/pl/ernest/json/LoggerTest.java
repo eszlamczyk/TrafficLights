@@ -47,10 +47,10 @@ public class LoggerTest {
     public void compatibilityTest() {
         Logger logger = Logger.getInstance();
         logger.startFancyLogging();
-        logger.logLeftCar(new Vehicle("Car1", Road.west));
+        logger.logLeftVehicle(new Car("Car1", Road.west));
         logger.addStep();
         logger.startBasicLogging();
-        logger.logLeftCar(new Vehicle("Car1", Road.west));
+        logger.logLeftVehicle(new Car("Car1", Road.west));
         logger.addStep();
         List<IStepStatus> stepStatuses = logger.getStepStatuses();
         assertEquals(2, stepStatuses.size());
@@ -61,8 +61,8 @@ public class LoggerTest {
     @Test
     public void testLogLeftCar() {
         Logger logger = Logger.getInstance();
-        Vehicle vehicle = new Vehicle("Car123", Road.west);
-        logger.logLeftCar(vehicle);
+        Car vehicle = new Car("Car123", Road.west);
+        logger.logLeftVehicle(vehicle);
         assertTrue(logger.getCurrentFancyStep().leftVehicles.contains("Car123"));
         assertTrue(logger.getCurrentBasicStep().leftVehicles.contains("Car123"));
     }

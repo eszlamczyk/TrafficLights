@@ -7,15 +7,15 @@ public interface ILight {
 
     void nextCycle();
 
-    List<Optional<Vehicle>> moveCarsIntoIntersection();
+    List<Optional<IVehicle>> moveCarsIntoIntersection();
 
-    Optional<Vehicle> moveCarIntoIntersectionFromLane(int laneNumber);
+    Optional<IVehicle> moveCarIntoIntersectionFromLane(int laneNumber);
 
     int getSumPriority();
 
     int getGreenPriority();
 
-    void addVehicle(Vehicle vehicle);
+    void addVehicle(IVehicle vehicle);
 
     int getAmountOfLanes();
 

@@ -9,23 +9,27 @@ public class Lane {
     private final LaneTurn turn;
     private final Queue<IndicatorLight> nextLights;
     private IndicatorLight light;
-    private final Queue<Vehicle> laneQueue;
+    private final Queue<IVehicle> laneQueue;
     private final boolean isTrafficArrow;
 
-    public Lane(LaneTurn turn, Queue<IndicatorLight> nextLights, Queue<Vehicle> laneQueue, boolean isTrafficArrow) {
+    private final boolean isBusLane;
+
+    public Lane(LaneTurn turn, Queue<IndicatorLight> nextLights, Queue<IVehicle> laneQueue, boolean isTrafficArrow, boolean isBusLane) {
         this.turn = turn;
         this.nextLights = nextLights;
         this.light = nextLights.remove();
         this.laneQueue = laneQueue;
         this.isTrafficArrow = isTrafficArrow;
+        this.isBusLane = isBusLane;
     }
 
-    public Lane(LaneTurn turn, Queue<IndicatorLight> nextLights, Queue<Vehicle> laneQueue) {
+    public Lane(LaneTurn turn, Queue<IndicatorLight> nextLights, Queue<IVehicle> laneQueue) {
         this.turn = turn;
         this.nextLights = nextLights;
         this.light = nextLights.remove();
         this.laneQueue = laneQueue;
         this.isTrafficArrow = false;
+        this.isBusLane = false;
     }
 
     public boolean vehiclesInQueue(){
@@ -36,15 +40,19 @@ public class Lane {
         return isTrafficArrow;
     }
 
+    public boolean isBusLane(){
+        return isBusLane;
+    }
+
     public int getAmountVehiclesInQueue(){
         return laneQueue.size();
     }
 
-    public void addVehicle(Vehicle vehicle){
+    public void addVehicle(IVehicle vehicle){
         laneQueue.add(vehicle);
     }
 
-    public Vehicle getNextVehicle(){
+    public IVehicle getNextVehicle(){
         return laneQueue.remove();
     }
 
@@ -67,7 +75,7 @@ public class Lane {
 
     public int getSumPriority(){
         int sum = 0;
-        for (Vehicle vehicle : laneQueue) {
+        for (IVehicle vehicle : laneQueue) {
             sum += vehicle.priority();
         }
         return sum;

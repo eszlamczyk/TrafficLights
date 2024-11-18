@@ -118,8 +118,8 @@ public class FancyLight implements ILight {
     }
 
     @Override
-    public List<Optional<Vehicle>> moveCarsIntoIntersection() {
-        ArrayList<Optional<Vehicle>> returnArray = new ArrayList<>();
+    public List<Optional<IVehicle>> moveCarsIntoIntersection() {
+        ArrayList<Optional<IVehicle>> returnArray = new ArrayList<>();
 
         for (Lane lane : lanes){
             if(lane.getLight() == IndicatorLight.Green && lane.vehiclesInQueue()){
@@ -131,7 +131,7 @@ public class FancyLight implements ILight {
     }
 
     @Override
-    public Optional<Vehicle> moveCarIntoIntersectionFromLane(int laneNumber) {
+    public Optional<IVehicle> moveCarIntoIntersectionFromLane(int laneNumber) {
 
         if (lanes.get(laneNumber).getLight() == IndicatorLight.Green && lanes.get(laneNumber).vehiclesInQueue()){
             return Optional.of(lanes.get(laneNumber).getNextVehicle());
@@ -161,7 +161,7 @@ public class FancyLight implements ILight {
     }
 
     @Override
-    public void addVehicle(Vehicle vehicle) {
+    public void addVehicle(IVehicle vehicle) {
         Set<LaneTurn> possibleLaneTurns = new HashSet<>();
         if (vehicle.endRoad() == this.startDirection.getOppositeRoad()) {
             possibleLaneTurns.add(LaneTurn.LeftStraight);
@@ -197,12 +197,10 @@ public class FancyLight implements ILight {
             possibleLaneTurns.add(LaneTurn.UTurn);
         }
 
-        ArrayList<Lane> correctLanes = new ArrayList<>();
-        for (Lane lane : lanes){
-            if(possibleLaneTurns.contains(lane.getTurn())){
-                correctLanes.add(lane);
-            }
-        }
+        ArrayList<Lane> correctLanes = new ArrayList<>(lanes.stream()
+                .filter(lane -> possibleLaneTurns.contains(lane.getTurn()))
+                .filter(lane -> !lane.isBusLane() || (lane.isBusLane() && vehicle instanceof Bus))
+                .toList());
 
         int shortestQueueAmount = Integer.MAX_VALUE;
         Lane chosenLane = correctLanes.getFirst();

@@ -1,0 +1,12 @@
+package pl.ernest.model;
+
+public record Car(String id, Road endRoad, int priority) implements IVehicle {
+    public Car(String id, Road endRoad) {
+        this(id, endRoad, 1);
+    }
+
+    @Override
+    public String toString() {
+        return id;
+    }
+}

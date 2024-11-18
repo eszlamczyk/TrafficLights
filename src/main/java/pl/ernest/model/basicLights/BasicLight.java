@@ -17,7 +17,7 @@ public class BasicLight implements ILight {
 
     private final Road startDirection;
 
-    public BasicLight(Queue<Vehicle> carsQueue, IndicatorLight indicatorLight, int lightPriority, Road startDirection) {
+    public BasicLight(Queue<IVehicle> carsQueue, IndicatorLight indicatorLight, int lightPriority, Road startDirection) {
         Queue<IndicatorLight> indicatorLightQueue = new LinkedList<>();
         for (int i = 0; i < 4; i++) {
             indicatorLightQueue.add(indicatorLight);
@@ -28,7 +28,7 @@ public class BasicLight implements ILight {
         this.startDirection = startDirection;
     }
 
-    public BasicLight(Queue<Vehicle> carsQueue, IndicatorLight indicatorLight, Road startDirection) {
+    public BasicLight(Queue<IVehicle> carsQueue, IndicatorLight indicatorLight, Road startDirection) {
         this(carsQueue, indicatorLight,1, startDirection);
     }
 
@@ -39,8 +39,8 @@ public class BasicLight implements ILight {
     }
 
     @Override
-    public List<Optional<Vehicle>> moveCarsIntoIntersection() {
-        ArrayList<Optional<Vehicle>> result = new ArrayList<>();
+    public List<Optional<IVehicle>> moveCarsIntoIntersection() {
+        ArrayList<Optional<IVehicle>> result = new ArrayList<>();
         if (lane.vehiclesInQueue() && lane.getLight() == IndicatorLight.Green){
             result.add(Optional.of(lane.getNextVehicle()));
         }else {
@@ -49,7 +49,7 @@ public class BasicLight implements ILight {
         return result;
     }
 
-    public Optional<Vehicle> moveCarIntoIntersectionFromLane(int laneNumber){
+    public Optional<IVehicle> moveCarIntoIntersectionFromLane(int laneNumber){
         if (laneNumber == 0){
             return moveCarsIntoIntersection().getFirst();
         }
@@ -71,7 +71,7 @@ public class BasicLight implements ILight {
     }
 
     @Override
-    public void addVehicle(Vehicle vehicle){
+    public void addVehicle(IVehicle vehicle){
         lane.addVehicle(vehicle);
     }
 

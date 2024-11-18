@@ -3,13 +3,10 @@ package pl.ernest.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pl.ernest.command.AddPedestrianCommand;
-import pl.ernest.model.Pedestrian;
-import pl.ernest.model.TrafficLights;
+import pl.ernest.model.*;
 import pl.ernest.command.AddVehicleCommand;
 import pl.ernest.command.ICommand;
 import pl.ernest.command.StepCommand;
-import pl.ernest.model.Road;
-import pl.ernest.model.Vehicle;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,14 +28,15 @@ public class JSONParser {
                     String vehicleId = commandNode.get("vehicleId").asText();
                     Road startRoad = Road.valueOf(commandNode.get("startRoad").asText());
                     Road endRoad = Road.valueOf(commandNode.get("endRoad").asText());
-                    Vehicle newVehicle;
-                    if (commandNode.has("priority")){
-                        int priority = commandNode.get("priority").asInt();
-                        newVehicle = new Vehicle(vehicleId,endRoad,priority);
-                    }else {
-                        newVehicle = new Vehicle(vehicleId,endRoad);
-                    }
-                    commands.add(new AddVehicleCommand(newVehicle, trafficLights,startRoad));
+
+                    boolean isBus = "bus".equalsIgnoreCase(commandNode.path("vehicleType").asText(null));
+                    int priority = commandNode.path("priority").asInt(1);
+
+                    IVehicle newVehicle = isBus
+                            ? new Bus(vehicleId, endRoad, priority)
+                            : new Car(vehicleId, endRoad, priority);
+
+                    commands.add(new AddVehicleCommand(newVehicle, trafficLights, startRoad));
                     break;
 
                 case "addPedestrian":

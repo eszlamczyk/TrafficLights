@@ -70,7 +70,7 @@ class TrafficLightsTest {
 
     @Test
     void testAddVehicle() {
-        Vehicle mockVehicle = mock(Vehicle.class);
+        Car mockVehicle = mock(Car.class);
         trafficLights.addVehicle(Road.north, mockVehicle);
         verify(northLight).addVehicle(mockVehicle);
     }

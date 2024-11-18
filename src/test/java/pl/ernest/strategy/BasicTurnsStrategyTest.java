@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import pl.ernest.model.ILight;
 import pl.ernest.model.IndicatorLight;
 import pl.ernest.model.Road;
-import pl.ernest.model.Vehicle;
+import pl.ernest.model.Car;
 import pl.ernest.model.basicLights.BasicLight;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class BasicTurnsStrategyTest {
 
     @Test
     void carsOnlyInGreenLightTest(){
-        lightGreen.addVehicle(new Vehicle("car1", Road.west));
+        lightGreen.addVehicle(new Car("car1", Road.west));
 
         AbstractTurnsStrategy turnsStrategy = new BasicTurnsStrategy(10);
 
@@ -41,7 +41,7 @@ public class BasicTurnsStrategyTest {
 
     @Test
     void carsOnlyInNotGreenLightTest(){
-        lightRed.addVehicle(new Vehicle("car1", Road.west));
+        lightRed.addVehicle(new Car("car1", Road.west));
 
         AbstractTurnsStrategy turnsStrategy = new BasicTurnsStrategy(10);
 
@@ -60,42 +60,42 @@ public class BasicTurnsStrategyTest {
 
     @Test
     void sequentialBasicTurnsStrategyTest(){
-        lightGreen.addVehicle(new Vehicle("car1", Road.west));
-        lightRed.addVehicle(new Vehicle("10 cars in one :o", Road.west, 10));
+        lightGreen.addVehicle(new Car("car1", Road.west));
+        lightRed.addVehicle(new Car("10 cars in one :o", Road.west, 10));
 
         AbstractTurnsStrategy turnsStrategy = new BasicTurnsStrategy(10);
 
         assertEquals(1, turnsStrategy.calculateTurns(lights));
 
-        lightGreen.addVehicle(new Vehicle("car2", Road.west));
+        lightGreen.addVehicle(new Car("car2", Road.west));
         assertEquals(2, turnsStrategy.calculateTurns(lights));
 
-        lightGreen.addVehicle(new Vehicle("car3", Road.west));
+        lightGreen.addVehicle(new Car("car3", Road.west));
         assertEquals(3, turnsStrategy.calculateTurns(lights));
 
-        lightGreen.addVehicle(new Vehicle("car4", Road.west));
+        lightGreen.addVehicle(new Car("car4", Road.west));
         assertEquals(3, turnsStrategy.calculateTurns(lights));
 
-        lightGreen.addVehicle(new Vehicle("car5", Road.west));
+        lightGreen.addVehicle(new Car("car5", Road.west));
         assertEquals(4, turnsStrategy.calculateTurns(lights));
 
-        lightGreen.addVehicle(new Vehicle("car6", Road.west));
+        lightGreen.addVehicle(new Car("car6", Road.west));
         assertEquals(4, turnsStrategy.calculateTurns(lights));
 
-        lightGreen.addVehicle(new Vehicle("car7", Road.west));
+        lightGreen.addVehicle(new Car("car7", Road.west));
         assertEquals(5, turnsStrategy.calculateTurns(lights));
 
-        lightGreen.addVehicle(new Vehicle("car8", Road.west));
+        lightGreen.addVehicle(new Car("car8", Road.west));
         assertEquals(5, turnsStrategy.calculateTurns(lights));
 
-        lightGreen.addVehicle(new Vehicle("car9", Road.west));
+        lightGreen.addVehicle(new Car("car9", Road.west));
         assertEquals(5, turnsStrategy.calculateTurns(lights));
 
-        lightGreen.addVehicle(new Vehicle("car10", Road.west));
+        lightGreen.addVehicle(new Car("car10", Road.west));
         assertEquals(5, turnsStrategy.calculateTurns(lights));
 
 
-        lightGreen.addVehicle(new Vehicle("VERY important car", Road.west, 80));
+        lightGreen.addVehicle(new Car("VERY important car", Road.west, 80));
         assertEquals(9, turnsStrategy.calculateTurns(lights));
 
     }
