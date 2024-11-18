@@ -245,6 +245,11 @@ public class FancyLight implements ILight {
     }
 
     @Override
+    public void forcePedestrianLightRed() {
+        this.pedestrianLight = IndicatorLight.Red;
+    }
+
+    @Override
     public String toString(){
         StringBuilder resultString = new StringBuilder(startDirection.toString() + " road; [");
 
